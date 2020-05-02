@@ -1,12 +1,19 @@
 package com;
 
 import DBconnection.DB;
-
+import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
+
+import java.io.IOException; 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner; 
+
 
 public class Patient {
 	
@@ -22,7 +29,7 @@ public class Patient {
 				return "Error while connecting to the database for inserting.";
 			}
 			// create a prepared statement
-			System.out.println("inide innnsert");
+			
 		
 			String query = "insert into user (`Uid`,`first`,`lname`,`email`,`age`,`mobile`,`password`)" + " values (?, ?, ?, ?, ?, ?, ?)";
 			
@@ -31,6 +38,8 @@ public class Patient {
 			
 			
 			PreparedStatement preparedStmt = con.prepareStatement(query);
+			
+			
 			
 			//run up to here
 			// binding values
@@ -42,11 +51,13 @@ public class Patient {
 			preparedStmt.setInt(6, Integer.parseInt(patmobile));
 			preparedStmt.setString(7, patpassword);
 			
-			
+			System.out.println("inide innnsertd");
 			
 			// execute the statement
 			preparedStmt.execute();
 			con.close();
+			
+		
 			
 			String newPatients = readPatient(); 
 			output = "{\"status\":\"success\", \"data\": \"" +   
@@ -58,7 +69,7 @@ public class Patient {
 			
 		} catch (Exception e) {
 			output = "{\"status\":\"error\", \"data\":    "
-					+ "     \"Error while inserting the item.\"}"; 
+					+ "     \"Error while inserting the Patient.\"}"; 
 			System.err.println(e.getMessage()); 
 		}
 		return output;
@@ -111,12 +122,12 @@ public class Patient {
 				
 				
 				// buttons   
-				output += "<td><input name='btnUpdate' type='button'"
-						+ "       value='Update'  "
+				output += "<td><input name='btnUpdate'"
+						+ " type='button'" + "value='Update'  "
 						+ "         class='btnUpdate btn btn-secondary'></td>"
 						+ "      <td><input name='btnRemove' type='button'      "
 						+ " value='Remove'      "
-						+ "     class='btnRemove btn btn-danger' data-itemid='" 
+						+ "     class='btnRemove btn btn-danger' data-Uid='" 
 						+ Uid + "'>" + "</td></tr>"; 
 				
 				
@@ -141,11 +152,13 @@ public class Patient {
 				return "Error while connecting to the database for updating.";
 			}
 			
-			
+					
 			// create a prepared statement
 			
 			String query = "UPDATE user SET first=?,lname=?,email=?,age=?,mobile=?,password=? WHERE Uid=?";
 			PreparedStatement preparedStmt = con.prepareStatement(query);
+			
+			
 			
 			// binding values
 			preparedStmt.setString(1, patfirst);
@@ -155,6 +168,8 @@ public class Patient {
 			preparedStmt.setInt(5, Integer.parseInt(patmobile));
 			preparedStmt.setString(6, patpassword);
 			preparedStmt.setInt(7, Integer.parseInt(patUid));
+			
+			
 			
 			// execute the statement
 			preparedStmt.execute();
@@ -171,15 +186,15 @@ public class Patient {
 			
 		} catch (Exception e) {
 			output = "{\"status\":\"error\", \"data\":    "
-					+ "     \"Error while updating the patient.\"}";  
+					+ "     \"Error while updating the patienttt.\"}";  
 			System.err.println(e.getMessage()); 
 		}
 		return output;
 	}
-
+			
 	
 	
-	public String deletePatient(String patUid) {
+	public String deletePatient(String Uid) {
 		
 		String output = "";
 		
@@ -192,15 +207,21 @@ public class Patient {
 			// create a prepared statement
 			String query ="delete from user where Uid=?";
 			PreparedStatement preparedStmt = con.prepareStatement(query);
+			
 			// binding values
-			preparedStmt.setInt(1, Integer.parseInt(patUid));
+			preparedStmt.setInt(1, Integer.parseInt(Uid));
+			
+			System.out.println("BBBBBB");
+			
 			// execute the statement
 			preparedStmt.execute();
 			con.close();
 			
-			String newItems = readPatient();  
+			
+			
+			String newPatients = readPatient();  
 			output = "{\"status\":\"success\", \"data\": \"" +    
-			newItems + "\"}"; 
+			newPatients + "\"}"; 
 			
 			
 			//output = "Deleted successfully";
